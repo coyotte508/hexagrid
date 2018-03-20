@@ -1,0 +1,33 @@
+{
+  "name": "hexagrid",
+  "version": "0.0.1",
+  "description": "Hexagonal grid with fast lookup",
+  "main": "dist\u001f/index.js",
+  "repository": "git@github.com:coyotte508/hexagrid.git",
+  "author": "coyotte508 <coyotte508@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "prepublishOnly": "tsc",
+    "test": "mocha -r ts-node/register src/**/*.spec.ts"
+  },
+  "files": [
+    "index.ts",
+    "src",
+    "dist",
+    "tsconfig.json",
+    "index.d.ts"
+  ],
+  "types": "index.d.ts",
+  "devDependencies": {
+    "@types/chai": "^4.1.2",
+    "@types/mocha": "^2.2.48",
+    "@types/node": "^9.4.7",
+    "chai": "^4.1.2",
+    "mocha": "^5.0.4",
+    "ts-node": "^5.0.1",
+    "typescript": "^2.7.2"
+  },
+  "keywords": [
+    "hexagon", "hexagonal", "grid"
+  ]
+}
