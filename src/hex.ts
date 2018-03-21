@@ -41,24 +41,31 @@ export default class Hex<Data=any> implements CubeCoordinates {
         return `${this.q}x${this.r}`;
     }
 
-    static hexagon<Data>(radius: number, options?: {defaultData?: Data, data?: Data[]}) : Hex<Data>[] {
-        const {defaultData, data} = loadDefaults(options, {defaultData: null, data: []});
+    /**
+     * Creates an hexagon of radius r, feeding the data supplied. 
+     * 
+     * 0 is a single hexagon
+     * @param radius 
+     * @param options 
+     */
+    static hexagon<Data>(radius: number, options?: {data?: Data[]}) : Hex<Data>[] {
+        const {data} = loadDefaults(options, {data: []});
         const ret: Hex<Data>[][] = [];
         let totalLength = 0;
         
         for (let r = radius; r >= 0; r--) {
-            ret.push(Hex.ring(r, {defaultData, data: data.slice(totalLength)}));
+            ret.push(this.ring(r, {data: data.slice(totalLength)}));
             totalLength += ret[ret.length-1].length;
         }
 
         return ([] as Hex<Data>[]).concat(...ret);
     }
 
-    static ring<Data>(radius: number, options?: {defaultData?: Data, data?: Data[]}) : Hex<Data>[] {
-        const {defaultData, data} = loadDefaults(options, {defaultData: null, data: []});
+    static ring<Data>(radius: number, options?: {data?: Data[]}) : Hex<Data>[] {
+        const {data} = loadDefaults(options, {data: []});
         const ret: Hex<Data>[] = [];
 
-        const feed: () => Data = () => ret.length < data.length ? data[ret.length] : clone(defaultData);
+        const feed: () => Data = () => ret.length < data.length ? data[ret.length] : null;
 
         // flat N to NW
         for (let [q, r] = [0, radius]; r >= 0; r--, q++) {
@@ -86,5 +93,21 @@ export default class Hex<Data=any> implements CubeCoordinates {
         }
 
         return ret;
+    }
+
+    /**
+     * Creates a child class that extends Hex, and initializes by default
+     * with data = `defaultData`
+     * 
+     * @param defaultData 
+     */
+    static extend<Data>(defaultData: Data) {
+        return class ExtendedHex extends this<Data> {
+            constructor(q: number, r: number, data?: Partial<Data>) {
+                super(q, r, Object.assign({}, data, defaultData));
+            }
+
+            static defaultData = defaultData;
+        }
     }
 }
