@@ -106,8 +106,6 @@ export default class Hex<Data=any> implements CubeCoordinates {
             constructor(q: number, r: number, data?: Partial<Data>) {
                 super(q, r, Object.assign({}, data, defaultData));
             }
-
-            static defaultData = defaultData;
         }
     }
 }
