@@ -2,7 +2,7 @@
   "name": "hexagrid",
   "version": "0.1.4",
   "description": "Hexagonal grid with fast lookup",
-  "main": "dist\u001f/index.js",
+  "main": "dist/index.js",
   "repository": "git@github.com:coyotte508/hexagrid.git",
   "author": "coyotte508 <coyotte508@gmail.com>",
   "license": "MIT",
