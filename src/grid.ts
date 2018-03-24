@@ -58,9 +58,11 @@ export default class Grid<Data=any> {
      * @param times 
      * @param center The origin if not given
      */
-    rotateLeft(times: number = 1, center?: CubeCoordinates) {
+    rotateLeft(times: number = 1, center?: CubeCoordinates): Grid<Data> {
         this.hexes.forEach(hex => hex.rotateLeft(times, center));
         this.recalibrate();
+
+        return this;
     }
 
     /**
@@ -71,19 +73,23 @@ export default class Grid<Data=any> {
      * @param times 
      * @param center The origin if not given
      */
-    rotateRight(times: number = 1, center?: CubeCoordinates) {
+    rotateRight(times: number = 1, center?: CubeCoordinates): Grid<Data> {
         this.hexes.forEach(hex => hex.rotateRight(times, center));
         this.recalibrate();
+
+        return this;
     }
 
     /**
      * Makes sure the underlying storage of Hexes is coherent, if 
      * any of their coordinates was changed since they were added
      */
-    recalibrate() {
+    recalibrate(): Grid<Data> {
         const array = Array.from(this.values());
         this.hexes.clear();
         this.push(...array);
+
+        return this;
     }
 
     values(): IterableIterator<Hex<Data>> {
