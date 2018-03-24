@@ -16,11 +16,13 @@ export default class Grid<Data=any> {
      * the older hexes are overwritten, similarly to what happens with `Object.assign`.
      * @param grids grids to merge into the current grid
      */
-    merge(...grids: Grid<Data>[]) {
+    merge(...grids: Grid<Data>[]): Grid<Data> {
         const [thisHexes, ...otherHexes] = [this, ...grids].map(grid => Array.from(grid.values()));
 
         this.hexes.clear();
         this.push(...thisHexes.concat(...otherHexes));
+
+        return this;
     }
 
     /**
