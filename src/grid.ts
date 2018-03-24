@@ -33,6 +33,21 @@ export default class Grid<Data=any> {
         }
     }
 
+    get(q: number, r: number): Hex<Data> {
+        return this.hexes.get(`${q}x${r}`);
+    }
+
+    /**
+     * Removes a hex by its coordinates. Returns whether there 
+     * was a hex removed
+     * 
+     * @param q 
+     * @param r 
+     */
+    remove(q: number, r: number): boolean {
+        return this.hexes.delete(`${q}x${r}`);
+    }
+
     /**
      * Rotates the whole grid X times to the left, relative to center. 
      * 

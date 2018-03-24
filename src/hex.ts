@@ -41,28 +41,43 @@ export default class Hex<Data=any> implements CubeCoordinates {
         return `${this.q}x${this.r}`;
     }
 
+    toJSON(): CubeCoordinates & {data: Data} {
+        return {
+            q: this.q,
+            r: this.r,
+            s: this.s,
+            data: this.data
+        };
+    }
+
     /**
-     * Creates an hexagon of radius r, feeding the data supplied. 
+     * Creates an hexagon of radius r around options.center, feeding the data supplied. 
      * 
-     * 0 is a single hexagon
+     * A radius of 0 gives a single hexagon
      * @param radius 
      * @param options 
      */
-    static hexagon<Data>(radius: number, options?: {data?: Data[]}) : Hex<Data>[] {
-        const {data} = loadDefaults(options, {data: []});
+    static hexagon<Data>(radius: number, options?: {center?: CubeCoordinates, data?: Data[]}) : Hex<Data>[] {
+        const {center, data} = loadDefaults(options, {data: [], center: {q: 0, r: 0, s: 0}});
         const ret: Hex<Data>[][] = [];
         let totalLength = 0;
         
         for (let r = radius; r >= 0; r--) {
-            ret.push(this.ring(r, {data: data.slice(totalLength)}));
+            ret.push(this.ring(r, {center, data: data.slice(totalLength)}));
             totalLength += ret[ret.length-1].length;
         }
 
         return ([] as Hex<Data>[]).concat(...ret);
     }
 
-    static ring<Data>(radius: number, options?: {data?: Data[]}) : Hex<Data>[] {
-        const {data} = loadDefaults(options, {data: []});
+    /**
+     * Creates a ring of radius r around options.center, feeding the data supplied
+     * 
+     * @param radius 
+     * @param options
+     */
+    static ring<Data>(radius: number, options?: {center?: CubeCoordinates, data?: Data[]}) : Hex<Data>[] {
+        const {center, data} = loadDefaults(options, {data: [], center: {q: 0, r: 0, s: 0}});
         const ret: Hex<Data>[] = [];
 
         const feed: () => Data = () => ret.length < data.length ? data[ret.length] : null;
@@ -90,6 +105,11 @@ export default class Hex<Data=any> implements CubeCoordinates {
         // NE to N
         for (let [q, r] = [-radius+1, radius]; q < 0; q++) {
             ret.push(new Hex(q,r,feed()));
+        }
+
+        for (let hex of ret) {
+            hex.q += center.q;
+            hex.r += center.r;
         }
 
         return ret;
