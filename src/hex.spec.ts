@@ -32,4 +32,18 @@ describe("Hex", () => {
         const json = JSON.parse(JSON.stringify(hex));
         expect(json).to.include({q: 5, r: -3, s: -2});
     });
+
+    it ("should generate hexagons with data feeding", () => {
+        const HexNone = Hex.extend("none");
+        const hexaNone = HexNone.hexagon(1);
+        expect(hexaNone.map(hex => hex.data)).to.have.same.members(["none","none","none","none","none","none","none"]);
+
+        const hexaAbcdefg = Hex.hexagon(1, {data: ["a","b","c","d","e","f","g"]});
+        expect(hexaAbcdefg.map(hex => hex.data)).to.have.same.members(["a","b","c","d","e","f","g"]);
+
+        const HexA = Hex.extend({a: 5});
+        const data = [{a:1}, {a: 2}];
+        const ringA = HexA.ring(1, {data});
+        expect(ringA.map(hex => hex.data)).to.include.deep.members([{a:1}, {a: 2}, {a: 5}]);
+    });
 });
