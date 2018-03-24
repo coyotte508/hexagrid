@@ -1,5 +1,6 @@
 import Hex from "./hex";
-import CubeCoordinates from "./cubecoordinates";
+import { Direction } from "./direction";
+import { CubeCoordinates } from "./cubecoordinates";
 
 export default class Grid<Data=any> {    
     private hexes: Map<string, Hex<Data>> = new Map();
@@ -37,6 +38,27 @@ export default class Grid<Data=any> {
 
     get(q: number, r: number): Hex<Data> {
         return this.hexes.get(`${q}x${r}`);
+    }
+
+    neighbour(q: number, r: number, direction: Direction) {
+        const coord = CubeCoordinates.translated({q, r, s: -q-r}, direction);
+        return this.get(coord.r, coord.s);
+    }
+
+    neighbours(q: number, r: number, directions: number = Direction.all): Hex<Data>[] {
+        const ret = <Hex<Data>[]>[];
+        const center = {q, r, s: -q-r};
+        for (let direction of Direction.list()) {
+            if (direction & directions) {
+                const {q, r} = CubeCoordinates.translated(center, direction);
+                const hex = this.get(q, r);
+                if ( hex ) {
+                    ret.push(hex);
+                }            
+            }
+        }
+
+        return ret;
     }
 
     /**

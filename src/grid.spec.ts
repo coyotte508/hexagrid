@@ -61,4 +61,11 @@ describe("Grid", () => {
         expect(grid.get(1, 1)).to.be.undefined;
         expect(grid.get(1, 2).data).to.equal("ola");
     });
+
+    it ("should be able to find neighbours", () => {
+        const grid = new Grid(...Hex.ring(1));
+
+        expect(grid.neighbours(0, 0).length).to.equal(6);
+        expect(grid.neighbours(1, 0).length).to.equal(2);
+    });
 });

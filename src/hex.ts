@@ -1,4 +1,4 @@
-import CubeCoordinates from "./cubecoordinates";
+import { CubeCoordinates } from "./cubecoordinates";
 import { loadDefaults, clone } from "./utils";
 
 export default class Hex<Data=any> implements CubeCoordinates {
@@ -82,27 +82,27 @@ export default class Hex<Data=any> implements CubeCoordinates {
 
         const feed: () => Data = () => ret.length < data.length ? data[ret.length] : undefined;
 
-        // flat N to NW
+        // flat N to NE
         for (let [q, r] = [0, radius]; r >= 0; r--, q++) {
             ret.push(new this(q,r,feed()));
         }
-        // NW to SW
+        // NE to SE
         for (let [q, r] = [radius, -1]; r >= -radius; r--) {
             ret.push(new this(q,r,feed()));
         }
-        // SW to S
+        // SE to S
         for (let [q, r] = [radius-1, -radius]; q >= 0; q--) {
             ret.push(new this(q,r,feed()));
         }
-        // S to SE
+        // S to SW
         for (let [q, r] = [-1, -radius+1]; q >= -radius; q--, r++) {
             ret.push(new this(q,r,feed()));
         }
-        // SE to NE
+        // SW to NW
         for (let [q, r] = [-radius, 1]; r <= radius; r++) {
             ret.push(new this(q,r,feed()));
         }
-        // NE to N
+        // NW to N
         for (let [q, r] = [-radius+1, radius]; q < 0; q++) {
             ret.push(new this(q,r,feed()));
         }
