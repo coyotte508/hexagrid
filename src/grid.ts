@@ -117,4 +117,8 @@ export default class Grid<Data=any> {
     values(): IterableIterator<Hex<Data>> {
         return this.hexes.values();
     }
+
+    toJSON(): Array<Hex<Data>> {
+        return Array.from(this.values());
+    }
 }
