@@ -25,4 +25,14 @@ export namespace CubeCoordinates {
             default: throw new TypeError("Wrong direction: " + direction);
         }
     }
+
+    export function parse(str: string) {
+        const spl = str.split("x");
+
+        const q = +spl[0];
+        const r = +spl[1];
+        const s = -q-r;
+
+        return {q, r, s};
+    }
 }
