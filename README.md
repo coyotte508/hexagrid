@@ -122,8 +122,13 @@ Implements the `CubeCoordinates` interface.
 
 > Coordinates of the hex translated `n` times in `direction`.
 
+*static* **toString**(coord: CubeCoordinates): string
+
+> Opposite of `parse`
+
 ### Direction {North, NorthEast, SouthEast, South, SouthWest, NorthWest, all}
 
 *static* **list**(): Direction[]
 
 > Returns an array containing each direction
+

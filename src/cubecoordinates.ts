@@ -54,4 +54,8 @@ export namespace CubeCoordinates {
     export function distance(coord1: CubeCoordinates, coord2: CubeCoordinates) {
         return (Math.abs(coord1.q-coord2.q) + Math.abs(coord1.r-coord2.r) + Math.abs(coord1.s-coord2.s)) / 2;
     }
+    
+    export function toString(coord: CubeCoordinates) {
+        return `${coord.q}x${coord.r}`;
+    }
 }
