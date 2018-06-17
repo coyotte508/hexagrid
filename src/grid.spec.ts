@@ -68,4 +68,28 @@ describe("Grid", () => {
         expect(grid.neighbours(0, 0).length).to.equal(6);
         expect(grid.neighbours(1, 0).length).to.equal(2);
     });
+
+    describe("distance", () => {
+        it ("should return 0 if the starting point and end are the same", () => {
+            const grid = new Grid(...Hex.hexagon(1));
+
+            expect(grid.distance(1,0,1,0)).to.equal(0);
+        });
+
+        it ("should return the distance between two hexagons", () => {
+            const grid = new Grid(...Hex.hexagon(1), ...Hex.ring(1, {center: {q: 10, r: 0, s: -10}}));
+
+            expect(grid.distance(1,0,0,0)).to.equal(1);
+            expect(grid.distance(1,0,-1,0)).to.equal(2);
+            expect(grid.distance(11,0,9,0)).to.equal(3);
+        });
+
+        it ("should return -1 if there's no path", () => {
+            const grid = new Grid(...Hex.hexagon(1), ...Hex.hexagon(1, {center: {q: 10, r: 0, s: -10}}));
+
+            expect(grid.distance(0, 0, 10, 0)).to.equal(-1);
+            expect(grid.distance(-5,0,-5,0)).to.equal(-1);
+            expect(grid.distance(10, 1, 10, 0)).to.equal(1);
+        });
+    })
 });

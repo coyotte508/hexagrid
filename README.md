@@ -14,6 +14,14 @@ The grid can access individual hexagons efficiently by their coordinates. If you
 
 > Creates a grid with those hexes
 
+**distance**(q1:number, r1: number, q2: number, r2: number): number
+
+> Get the distance between two hexes. Returns `-1` if there's no path
+between the two hexes, or if one of the hexes doesn't belong to the
+grid
+>
+> The algorithm is not optimized with a direction heuristic
+
 **get**(q: number, r: number): Hex\<Data>
 
 > Get the corresponding stored Hex in the grid.
@@ -24,11 +32,15 @@ The grid can access individual hexagons efficiently by their coordinates. If you
 >
 > If hexes overlaps, the older hex is removed.
 
+**path**(q1:number, r1: number, q2: number, r2: number): Hex\<Data>[]
+
+> Get the shortest path between two hexes. Includes starting & destination hexes.
+>
+> The algorithm is not optimized with a direction heuristic
+
 get **size**(): number
 
 > Number of hexes in the grid
-
-
 
 ### Hex<Data=any>  {q, r, s, data}
 
