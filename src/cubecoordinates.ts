@@ -6,6 +6,14 @@ export interface CubeCoordinates {
     s: number
 }
 
+export class CubeCoordinates implements CubeCoordinates {
+    public s: number;
+    
+    constructor(public q = 0, public r = 0) {
+        this.s = -q - r;
+    }
+}
+
 export namespace CubeCoordinates {
     export function translated(coord: CubeCoordinates, direction: Direction, n: number = 1): CubeCoordinates {
         const {q, r, s} = coord;
@@ -34,5 +42,9 @@ export namespace CubeCoordinates {
         const s = -q-r;
 
         return {q, r, s};
+    }
+
+    export function distance(coord1: CubeCoordinates, coord2: CubeCoordinates) {
+        return (Math.abs(coord1.q-coord2.q) + Math.abs(coord1.r-coord2.r) + Math.abs(coord1.s-coord2.s)) / 2;
     }
 }

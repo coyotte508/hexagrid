@@ -55,3 +55,7 @@ Implements the `CubeCoordinates` interface.
 *static* **parse**(s: string): CubeCoordinates
 
 >Parse a string of the form `${q}x${r}`, for  example `0x0` or `4x-1`.
+
+*static* **distance**(coord1: CubeCoordinates, coord2: CubeCoordinates): number
+
+> Distance between two hexes, assuming no obstructions
