@@ -6,11 +6,11 @@ such as pixel coordinates of the center & corners of the hexes, use **honeycomb*
 
 ## API
 
-### Grid<Data = any>
+### Grid\<HexType extends Hex = Hex>
 
 The grid can access individual hexagons efficiently by their coordinates. If you modify an individual hex's coordinates, then you need to call `grid.recalibrate()`.
 
-**Grid**(...hexes: Hex\<Data>[])
+**Grid**(...hexes: HexType[])
 
 > Creates a grid with those hexes
 
@@ -22,17 +22,17 @@ grid
 >
 > The algorithm is not optimized with a direction heuristic
 
-**get**(q: number, r: number): Hex\<Data>
+**get**(q: number, r: number): HexType
 
 > Get the corresponding stored Hex in the grid.
 
-**merge**(...grids: Grid\<Data>[]): Grid\<Data>
+**merge**(...grids: Grid\<HexType>[]): Grid\<HexType>
 
 > Merges other grids into the current grid.
 >
 > If hexes overlaps, the older hex is removed.
 
-**path**(q1:number, r1: number, q2: number, r2: number): Hex\<Data>[]
+**path**(q1:number, r1: number, q2: number, r2: number): HexType[]
 
 > Get the shortest path between two hexes. Includes starting & destination hexes.
 >

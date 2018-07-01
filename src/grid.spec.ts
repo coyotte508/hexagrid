@@ -4,14 +4,14 @@ import Hex from "./hex";
 
 describe("Grid", () => {
     it ("should be able to get individual hexes", () => {
-        const grid = new Grid<string>(new Hex(2, -1, "Hello"), new Hex(2, 0, "World"));
+        const grid = new Grid<Hex<string>>(new Hex(2, -1, "Hello"), new Hex(2, 0, "World"));
         expect(grid.get(2, 1)).to.be.undefined;
         expect(grid.get(2, 0).data).to.equal("World");
         expect(grid.get(2, -1).data).to.equal("Hello");
     });
 
     it ("should overwrite hex at same position and have consistent size", () => {
-        const grid = new Grid<string>();
+        const grid = new Grid<Hex<string>>();
         expect(grid.size).to.equal(0);
 
         grid.push(new Hex(0, 2), new Hex(4, -2, "Hi"));

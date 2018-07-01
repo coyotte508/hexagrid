@@ -2,11 +2,11 @@ import Hex from "./hex";
 import { Direction } from "./direction";
 import { CubeCoordinates } from "./cubecoordinates";
 
-export default class Grid<Data=any> {    
-    private hexes: Map<string, Hex<Data>> = new Map();
+export default class Grid<HexType extends Hex<any> = Hex<any>> {    
+    private hexes: Map<string, HexType> = new Map();
     get size () : number { return this.hexes.size};
 
-    constructor(...hexes: Hex<Data>[]) {
+    constructor(...hexes: HexType[]) {
         this.push(...hexes);
     }
 
@@ -17,7 +17,7 @@ export default class Grid<Data=any> {
      * the older hexes are overwritten, similarly to what happens with `Object.assign`.
      * @param grids grids to merge into the current grid
      */
-    merge(...grids: Grid<Data>[]): Grid<Data> {
+    merge(...grids: Grid<HexType>[]): Grid<HexType> {
         const [thisHexes, ...otherHexes] = [this, ...grids].map(grid => Array.from(grid.values()));
 
         this.hexes.clear();
@@ -30,17 +30,17 @@ export default class Grid<Data=any> {
      * Adds a bunch of hexes to the grid
      * @param hexes 
      */
-    push(...hexes: Hex<Data>[]) {
+    push(...hexes: HexType[]) {
         for (let hex of hexes) {
             this.hexes.set(hex.toString(), hex);
         }
     }
 
-    get(q: number, r: number): Hex<Data> {
+    get(q: number, r: number): HexType {
         return this.hexes.get(`${q}x${r}`);
     }
 
-    getS(coord: string): Hex<Data> {
+    getS(coord: string): HexType {
         return this.hexes.get(coord);
     }
 
@@ -49,8 +49,8 @@ export default class Grid<Data=any> {
         return this.get(coord.r, coord.s);
     }
 
-    neighbours(q: number, r: number, directions: number = Direction.all): Hex<Data>[] {
-        const ret = <Hex<Data>[]>[];
+    neighbours(q: number, r: number, directions: number = Direction.all): HexType[] {
+        const ret = <HexType[]>[];
         const center = {q, r, s: -q-r};
         for (let direction of Direction.list()) {
             if (direction & directions) {
@@ -76,7 +76,7 @@ export default class Grid<Data=any> {
      * @param q2 q coordinate of the last hex
      * @param r2 r coordinate of the last hex
      */
-    path(q1: number, r1: number, q2: number, r2: number): Hex<Data>[] {
+    path(q1: number, r1: number, q2: number, r2: number): HexType[] {
         // Stupid algorithm, with no heuristic
 
         const hex1 = this.get(q1, r1);
@@ -88,7 +88,7 @@ export default class Grid<Data=any> {
 
         const destCoord = hex2.toString();
 
-        const pathTo: {[coord: string]: Hex<Data>[]} = {};
+        const pathTo: {[coord: string]: HexType[]} = {};
         pathTo[hex1.toString()] = [hex1];
 
         let toExpand = [hex1];
@@ -150,7 +150,7 @@ export default class Grid<Data=any> {
      * @param times 
      * @param center The origin if not given
      */
-    rotateLeft(times: number = 1, center?: CubeCoordinates): Grid<Data> {
+    rotateLeft(times: number = 1, center?: CubeCoordinates): Grid<HexType> {
         this.hexes.forEach(hex => hex.rotateLeft(times, center));
         this.recalibrate();
 
@@ -165,7 +165,7 @@ export default class Grid<Data=any> {
      * @param times 
      * @param center The origin if not given
      */
-    rotateRight(times: number = 1, center?: CubeCoordinates): Grid<Data> {
+    rotateRight(times: number = 1, center?: CubeCoordinates): Grid<HexType> {
         this.hexes.forEach(hex => hex.rotateRight(times, center));
         this.recalibrate();
 
@@ -176,7 +176,7 @@ export default class Grid<Data=any> {
      * Makes sure the underlying storage of Hexes is coherent, if 
      * any of their coordinates was changed since they were added
      */
-    recalibrate(): Grid<Data> {
+    recalibrate(): Grid<HexType> {
         const array = Array.from(this.values());
         this.hexes.clear();
         this.push(...array);
@@ -184,11 +184,11 @@ export default class Grid<Data=any> {
         return this;
     }
 
-    values(): IterableIterator<Hex<Data>> {
+    values(): IterableIterator<HexType> {
         return this.hexes.values();
     }
 
-    toJSON(): Array<Hex<Data>> {
+    toJSON(): Array<HexType> {
         return Array.from(this.values());
     }
 }
