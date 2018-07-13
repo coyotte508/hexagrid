@@ -14,7 +14,7 @@ The grid can access individual hexagons efficiently by their coordinates. If you
 
 > Creates a grid with those hexes
 
-**distance**(q1:number, r1: number, q2: number, r2: number): number
+**distance**(hex1: CubeCoordinates, hex2: CubeCoordinates): number
 
 > Get the distance between two hexes. Returns `-1` if there's no path
 between the two hexes, or if one of the hexes doesn't belong to the
@@ -22,7 +22,7 @@ grid
 >
 > The algorithm is not optimized with a direction heuristic
 
-**get**(q: number, r: number): HexType
+**get**(hex: CubeCoordinates): HexType
 
 > Get the corresponding stored Hex in the grid.
 
@@ -32,7 +32,7 @@ grid
 >
 > If hexes overlaps, the older hex is removed.
 
-**path**(q1:number, r1: number, q2: number, r2: number): HexType[]
+**path**(hex1: CubeCoordinates, hex2: CubeCoordinates): HexType[]
 
 > Get the shortest path between two hexes. Includes starting & destination hexes.
 >
@@ -59,3 +59,7 @@ Implements the `CubeCoordinates` interface.
 *static* **distance**(coord1: CubeCoordinates, coord2: CubeCoordinates): number
 
 > Distance between two hexes, assuming no obstructions
+
+*static* **translated**(coord: CubeCoordinates, direction: Direction, n = 1): CubeCoordinates
+
+> Coordinates of the hex translated `n` times in `direction`.

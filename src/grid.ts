@@ -1,6 +1,6 @@
 import Hex from "./hex";
 import { Direction } from "./direction";
-import { CubeCoordinates } from "./cubecoordinates";
+import { CubeCoordinates, CubeCoordinatesPartial } from "./cubecoordinates";
 
 export default class Grid<HexType extends Hex<any> = Hex<any>> {    
     private hexes: Map<string, HexType> = new Map();
@@ -36,26 +36,23 @@ export default class Grid<HexType extends Hex<any> = Hex<any>> {
         }
     }
 
-    get(q: number, r: number): HexType {
-        return this.hexes.get(`${q}x${r}`);
+    get(coord: CubeCoordinatesPartial): HexType {
+        return this.hexes.get(`${coord.q}x${coord.r}`);
     }
 
     getS(coord: string): HexType {
         return this.hexes.get(coord);
     }
 
-    neighbour(q: number, r: number, direction: Direction) {
-        const coord = CubeCoordinates.translated({q, r, s: -q-r}, direction);
-        return this.get(coord.r, coord.s);
+    neighbour(coord: CubeCoordinatesPartial, direction: Direction) {
+        return this.get(CubeCoordinates.translated(coord, direction));
     }
 
-    neighbours(q: number, r: number, directions: number = Direction.all): HexType[] {
+    neighbours(center: CubeCoordinatesPartial, directions: number = Direction.all): HexType[] {
         const ret = <HexType[]>[];
-        const center = {q, r, s: -q-r};
         for (let direction of Direction.list()) {
             if (direction & directions) {
-                const {q, r} = CubeCoordinates.translated(center, direction);
-                const hex = this.get(q, r);
+                const hex = this.get(CubeCoordinates.translated(center, direction));
                 if ( hex ) {
                     ret.push(hex);
                 }            
@@ -71,16 +68,12 @@ export default class Grid<HexType extends Hex<any> = Hex<any>> {
      * The algorithm doesn't take into account direction, and thus can be improved
      * to be faster
      * 
-     * @param q1 q coordinate of the first hex
-     * @param r1 r coordinate of the first hex
-     * @param q2 q coordinate of the last hex
-     * @param r2 r coordinate of the last hex
      */
-    path(q1: number, r1: number, q2: number, r2: number): HexType[] {
+    path(coord1: CubeCoordinatesPartial, coord2: CubeCoordinatesPartial): HexType[] {
         // Stupid algorithm, with no heuristic
 
-        const hex1 = this.get(q1, r1);
-        const hex2 = this.get(q2, r2);
+        const hex1 = this.get(coord1);
+        const hex2 = this.get(coord2);
 
         if (!hex1 || !hex2) {
             return undefined;
@@ -98,7 +91,7 @@ export default class Grid<HexType extends Hex<any> = Hex<any>> {
             for (const hex of toExpand) {
                 const curPath = pathTo[hex.toString()];
 
-                for (const neighbour of this.neighbours(hex.q, hex.r)) {
+                for (const neighbour of this.neighbours(hex)) {
                     const dest = neighbour.toString();
 
                     if (pathTo[dest] && pathTo[dest].length <= curPath.length + 1) {
@@ -119,14 +112,10 @@ export default class Grid<HexType extends Hex<any> = Hex<any>> {
 
     /**
      * Distance between two hexes. -1 if not possible
-     * 
-     * @param q1 
-     * @param r1 
-     * @param q2 
-     * @param r2 
+     *  
      */
-    distance(q1: number, r1: number, q2: number, r2: number) {
-        const path = this.path(q1, r1, q2, r2);
+    distance(hex1: CubeCoordinatesPartial, hex2: CubeCoordinatesPartial) {
+        const path = this.path(hex1, hex2);
 
         return (path || []).length - 1;
     }
@@ -138,7 +127,7 @@ export default class Grid<HexType extends Hex<any> = Hex<any>> {
      * @param q 
      * @param r 
      */
-    remove(q: number, r: number): boolean {
+    remove({q, r}: CubeCoordinatesPartial): boolean {
         return this.hexes.delete(`${q}x${r}`);
     }
 
