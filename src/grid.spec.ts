@@ -91,5 +91,13 @@ describe("Grid", () => {
             expect(grid.distance({q:-5, r: 0},{q:-5, r: 0})).to.equal(-1);
             expect(grid.distance({q:10, r: 1},{q:10, r: 0})).to.equal(1);
         });
+    });
+
+    describe("groups", () => {
+        it("should divide hexes into groups", () => {
+            const grid = new Grid(...Hex.hexagon(1), ...Hex.ring(1, {center: {q: 10, r: 0, s: -10}}));
+
+            expect(grid.groups([...grid.values()])).to.have.lengthOf(2);
+        });
     })
 });

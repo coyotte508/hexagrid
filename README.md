@@ -14,6 +14,14 @@ The grid can access individual hexagons efficiently by their coordinates. If you
 
 > Creates a grid with those hexes
 
+**get**(hex: CubeCoordinates): HexType
+
+> Get the corresponding stored Hex in the grid.
+
+**getS**(str: string): HexType
+
+> Get the corresponding stored Hex in the grid. `str` is `'${hex.q}x{hex.r}'`. 
+
 **distance**(hex1: CubeCoordinates, hex2: CubeCoordinates): number
 
 > Get the distance between two hexes. Returns `-1` if there's no path
@@ -22,9 +30,9 @@ grid
 >
 > The algorithm is not optimized with a direction heuristic
 
-**get**(hex: CubeCoordinates): HexType
+**groups**(hexes: HexType[]): Set\<HexType>[]
 
-> Get the corresponding stored Hex in the grid.
+> Divides the givens hexes into groups. Each group is a set of adjacent hexes.
 
 **merge**(...grids: Grid\<HexType>[]): Grid\<HexType>
 

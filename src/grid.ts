@@ -162,6 +162,61 @@ export default class Grid<HexType extends Hex<any> = Hex<any>> {
     }
 
     /**
+     * Separate the hexes given into groups.
+     * 
+     * Each hex in a group can travel through to other
+     * members of its group by going through only members
+     * of its group.
+     * 
+     * @param hexes 
+     */
+    groups(hexes: HexType[]) {
+        const hexSet = new Set(hexes);
+        const groups: Array<Set<HexType>> = [];
+
+        for (const hex of hexes) {
+            // If the hex is already in a group
+            if ((() => {
+                for (const group of groups) {
+                    if (group.has(hex)) {
+                        return true;
+                    }
+                }
+            })()) {
+                continue;
+            }
+
+            const newGroup = new Set([hex]);
+            let toExplore = new Set([hex]);
+            let nextToExplore = new Set();
+
+            groups.push(newGroup);
+
+            while(toExplore.size > 0) {
+                for (const hex of toExplore) {
+                    for (const nb of this.neighbours(hex)) {
+                        if (newGroup.has(nb)) {
+                            continue;
+                        }
+    
+                        if (!hexSet.has(nb)) {
+                            continue;
+                        }
+    
+                        newGroup.add(nb);
+                        nextToExplore.add(nb);
+                    }
+                }
+
+                toExplore = nextToExplore;
+                nextToExplore = new Set();
+            }
+        }
+
+        return groups;
+    }
+
+    /**
      * Makes sure the underlying storage of Hexes is coherent, if 
      * any of their coordinates was changed since they were added
      */
