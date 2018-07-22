@@ -27,8 +27,6 @@ The grid can access individual hexagons efficiently by their coordinates. If you
 > Get the distance between two hexes. Returns `-1` if there's no path
 between the two hexes, or if one of the hexes doesn't belong to the
 grid
->
-> The algorithm is not optimized with a direction heuristic
 
 **groups**(hexes: HexType[]): Set\<HexType>[]
 
@@ -43,8 +41,6 @@ grid
 **path**(hex1: CubeCoordinates, hex2: CubeCoordinates): HexType[]
 
 > Get the shortest path between two hexes. Includes starting & destination hexes.
->
-> The algorithm is not optimized with a direction heuristic
 
 get **size**(): number
 

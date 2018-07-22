@@ -2,9 +2,9 @@ import Hex from "./hex";
 import { Direction } from "./direction";
 import { CubeCoordinates, CubeCoordinatesPartial } from "./cubecoordinates";
 
-export default class Grid<HexType extends Hex<any> = Hex<any>> {    
+export default class Grid<HexType extends Hex<any> = Hex<any>> {
     private hexes: Map<string, HexType> = new Map();
-    get size () : number { return this.hexes.size};
+    get size(): number { return this.hexes.size; }
 
     constructor(...hexes: HexType[]) {
         this.push(...hexes);
@@ -12,12 +12,12 @@ export default class Grid<HexType extends Hex<any> = Hex<any>> {
 
     /**
      * Merge other grids into the current grid
-     * 
-     * If any hex in the new grids overlap with hexes in the current grid, 
+     *
+     * If any hex in the new grids overlap with hexes in the current grid,
      * the older hexes are overwritten, similarly to what happens with `Object.assign`.
      * @param grids grids to merge into the current grid
      */
-    merge(...grids: Grid<HexType>[]): Grid<HexType> {
+    merge(...grids: Array<Grid<HexType>>): Grid<HexType> {
         const [thisHexes, ...otherHexes] = [this, ...grids].map(grid => Array.from(grid.values()));
 
         this.hexes.clear();
@@ -28,10 +28,10 @@ export default class Grid<HexType extends Hex<any> = Hex<any>> {
 
     /**
      * Adds a bunch of hexes to the grid
-     * @param hexes 
+     * @param hexes
      */
     push(...hexes: HexType[]) {
-        for (let hex of hexes) {
+        for (const hex of hexes) {
             this.hexes.set(hex.toString(), hex);
         }
     }
@@ -49,13 +49,13 @@ export default class Grid<HexType extends Hex<any> = Hex<any>> {
     }
 
     neighbours(center: CubeCoordinatesPartial, directions: number = Direction.all): HexType[] {
-        const ret = <HexType[]>[];
-        for (let direction of Direction.list()) {
+        const ret = <HexType[]> [];
+        for (const direction of Direction.list()) {
             if (direction & directions) {
                 const hex = this.get(CubeCoordinates.translated(center, direction));
                 if ( hex ) {
                     ret.push(hex);
-                }            
+                }
             }
         }
 
@@ -64,14 +64,11 @@ export default class Grid<HexType extends Hex<any> = Hex<any>> {
 
     /**
      * Get the list of hexes forming the shortest path between two hexes (included)
-     * 
-     * The algorithm doesn't take into account direction, and thus can be improved
-     * to be faster
-     * 
+     *
+     * Using A*
+     *
      */
     path(coord1: CubeCoordinatesPartial, coord2: CubeCoordinatesPartial): HexType[] {
-        // Stupid algorithm, with no heuristic
-
         const hex1 = this.get(coord1);
         const hex2 = this.get(coord2);
 
@@ -81,38 +78,65 @@ export default class Grid<HexType extends Hex<any> = Hex<any>> {
 
         const destCoord = hex2.toString();
 
-        const pathTo: {[coord: string]: HexType[]} = {};
-        pathTo[hex1.toString()] = [hex1];
+        interface PathTo {
+            [coord: string]: HexType[];
+        }
 
-        let toExpand = [hex1];
-        let toExpandNext = [];
+        const allPaths: PathTo = {};
+        const toExpand: {[minDist: number]: PathTo} = {};
+        let toExpandNext: HexType[][] = [];
 
-        while (!(destCoord in pathTo) && toExpand.length > 0) {
-            for (const hex of toExpand) {
-                const curPath = pathTo[hex.toString()];
+        const addPath = (path: HexType[]) => {
+            const [last] = path.slice(-1);
 
-                for (const neighbour of this.neighbours(hex)) {
-                    const dest = neighbour.toString();
+            const minDist = CubeCoordinates.distance(last, hex2);
+            toExpand[minDist] = toExpand[minDist] || {};
+            toExpand[minDist][last.toString()] = path;
+            allPaths[last.toString()] = path;
+        };
 
-                    if (pathTo[dest] && pathTo[dest].length <= curPath.length + 1) {
-                        continue;
-                    }
+        const readyNextIteration = () => {
+            let minDistance = Number.POSITIVE_INFINITY;
 
-                    pathTo[dest] = [].concat(curPath, [neighbour]);
-                    toExpandNext.push(neighbour);
+            for (const key of Object.keys(toExpand)) {
+                if (+key < minDistance) {
+                    minDistance = +key;
                 }
             }
 
-            toExpand = toExpandNext;
-            toExpandNext = [];
+            if (minDistance < Number.POSITIVE_INFINITY) {
+                toExpandNext = Object.values(toExpand[minDistance]);
+                delete toExpand[minDistance];
+            } else {
+                toExpandNext = [];
+            }
+        };
+
+        addPath([hex1]);
+        readyNextIteration();
+
+        while (!(destCoord in allPaths) && toExpandNext.length > 0) {
+            for (const path of toExpandNext) {
+                const hex = path[path.length - 1];
+
+                for (const neighbour of this.neighbours(hex)) {
+                    if (allPaths[neighbour.toString()]) {
+                        continue;
+                    }
+
+                    addPath([...path, neighbour]);
+                }
+            }
+
+            readyNextIteration();
         }
 
-        return pathTo[destCoord];
+        return allPaths[destCoord];
     }
 
     /**
      * Distance between two hexes. -1 if not possible
-     *  
+     *
      */
     distance(hex1: CubeCoordinatesPartial, hex2: CubeCoordinatesPartial) {
         const path = this.path(hex1, hex2);
@@ -121,22 +145,22 @@ export default class Grid<HexType extends Hex<any> = Hex<any>> {
     }
 
     /**
-     * Removes a hex by its coordinates. Returns whether there 
+     * Removes a hex by its coordinates. Returns whether there
      * was a hex removed
-     * 
-     * @param q 
-     * @param r 
+     *
+     * @param q
+     * @param r
      */
     remove({q, r}: CubeCoordinatesPartial): boolean {
         return this.hexes.delete(`${q}x${r}`);
     }
 
     /**
-     * Rotates the whole grid X times to the left, relative to center. 
-     * 
+     * Rotates the whole grid X times to the left, relative to center.
+     *
      * Each rotation is 60°
-     * 
-     * @param times 
+     *
+     * @param times
      * @param center The origin if not given
      */
     rotateLeft(times: number = 1, center?: CubeCoordinates): Grid<HexType> {
@@ -147,11 +171,11 @@ export default class Grid<HexType extends Hex<any> = Hex<any>> {
     }
 
     /**
-     * Rotates the whole grid X times to the right, relative to center. 
-     * 
+     * Rotates the whole grid X times to the right, relative to center.
+     *
      * Each rotation is 60°
-     * 
-     * @param times 
+     *
+     * @param times
      * @param center The origin if not given
      */
     rotateRight(times: number = 1, center?: CubeCoordinates): Grid<HexType> {
@@ -163,12 +187,12 @@ export default class Grid<HexType extends Hex<any> = Hex<any>> {
 
     /**
      * Separate the hexes given into groups.
-     * 
+     *
      * Each hex in a group can travel through to other
      * members of its group by going through only members
      * of its group.
-     * 
-     * @param hexes 
+     *
+     * @param hexes
      */
     groups(hexes: HexType[]) {
         const hexSet = new Set(hexes);
@@ -192,17 +216,17 @@ export default class Grid<HexType extends Hex<any> = Hex<any>> {
 
             groups.push(newGroup);
 
-            while(toExplore.size > 0) {
+            while (toExplore.size > 0) {
                 for (const hex of toExplore) {
                     for (const nb of this.neighbours(hex)) {
                         if (newGroup.has(nb)) {
                             continue;
                         }
-    
+
                         if (!hexSet.has(nb)) {
                             continue;
                         }
-    
+
                         newGroup.add(nb);
                         nextToExplore.add(nb);
                     }
@@ -217,7 +241,7 @@ export default class Grid<HexType extends Hex<any> = Hex<any>> {
     }
 
     /**
-     * Makes sure the underlying storage of Hexes is coherent, if 
+     * Makes sure the underlying storage of Hexes is coherent, if
      * any of their coordinates was changed since they were added
      */
     recalibrate(): Grid<HexType> {
@@ -232,7 +256,7 @@ export default class Grid<HexType extends Hex<any> = Hex<any>> {
         return this.hexes.values();
     }
 
-    toJSON(): Array<HexType> {
+    toJSON(): HexType[] {
         return Array.from(this.values());
     }
 }
