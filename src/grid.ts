@@ -76,10 +76,10 @@ export default class Grid<HexType extends Hex<any> = Hex<any>> {
             return undefined;
         }
 
-        const testPath = this.easyPath(coord1, coord2);
-        if (testPath) {
-            return testPath;
-        }
+        // const testPath = this.easyPath(coord1, coord2);
+        // if (testPath) {
+        //     return testPath;
+        // }
 
         const destCoord = hex2.toString();
 
