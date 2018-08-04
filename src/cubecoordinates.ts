@@ -41,6 +41,17 @@ export namespace CubeCoordinates {
         }
     }
 
+    export function direction(coord1: CubeCoordinates, coord2: CubeCoordinates): Direction {
+        if (coord1.q < coord2.q) {
+            return coord1.r > coord2.r ? Direction.NorthWest: Direction.North;
+        } else if (coord1.q > coord2.q) {
+            return coord1.r < coord2.r ? Direction.SouthEast : Direction.South;
+        } else {
+            // coord1.q === coord2.q
+            return coord1.r < coord2.r ? Direction.NorthEast : Direction.SouthWest;
+        }
+    }
+
     export function parse(str: string) {
         const spl = str.split("x");
 

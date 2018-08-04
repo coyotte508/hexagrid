@@ -76,6 +76,11 @@ export default class Grid<HexType extends Hex<any> = Hex<any>> {
             return undefined;
         }
 
+        const testPath = this.easyPath(coord1, coord2);
+        if (testPath) {
+            return testPath;
+        }
+
         const destCoord = hex2.toString();
 
         interface PathTo {
@@ -132,6 +137,36 @@ export default class Grid<HexType extends Hex<any> = Hex<any>> {
         }
 
         return allPaths[destCoord];
+    }
+
+    /**
+     * Shortest path between two coordinates, stopping when obstacle
+     * @param hex1 
+     * @param hex2 
+     */
+    easyPath(coord1: CubeCoordinatesPartial, coord2: CubeCoordinatesPartial): HexType[] {
+        const hex1 = this.get(coord1);
+        const hex2 = this.get(coord2);
+
+        if (!hex1 || !hex2) {
+            return undefined;
+        }
+
+        const path = [hex1];
+
+        let currentHex = hex1;
+
+        while (currentHex.q !== hex2.q || currentHex.r !== hex2.r) {
+            currentHex = this.neighbour(currentHex, CubeCoordinates.direction(currentHex, hex2));
+
+            if (!currentHex) {
+                return undefined;
+            }
+
+            path.push(currentHex);
+        }
+
+        return path;
     }
 
     /**

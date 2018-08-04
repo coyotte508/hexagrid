@@ -67,3 +67,7 @@ Implements the `CubeCoordinates` interface.
 *static* **translated**(coord: CubeCoordinates, direction: Direction, n = 1): CubeCoordinates
 
 > Coordinates of the hex translated `n` times in `direction`.
+
+*static* **direction**(coord1: CubeCoordinates, coord2: CubeCoordinates): Direction
+
+> One of the possible directions in order to get closer to coord2 from coord1
