@@ -22,13 +22,43 @@ The grid can access individual hexagons efficiently by their coordinates. If you
 
 > Get the corresponding stored Hex in the grid. `str` is `'${hex.q}x{hex.r}'`. 
 
+**push**(...hexes: HexType[]): HexType
+
+> Adds a bunch of hexes to the grid
+
+**remove**(hex: CubeCoordinates): HexType
+
+> Remove the corresponding stored Hex in the grid and return it.
+
+**recalibrate**(): void
+
+> To call if you **manually** change the coordinates of an hex after it was added
+> to the grid
+
 **distance**(hex1: CubeCoordinates, hex2: CubeCoordinates): number
 
-> Get the distance between two hexes. Returns `-1` if there's no path
-between the two hexes, or if one of the hexes doesn't belong to the
-grid
+> Get the distance between two hexes of the grid. Returns `-1` if there's no path
+between the two hexes, or if one of the two hexes doesn't belong to the
+grid.
 >
-> The algorithm is not optimized with a direction heuristic
+> To get a bird's eye distance, use `CubeCoordinates.distance()`.
+
+**neighbour**(hex: CubeCoordinates, direction: Direction): HexType
+
+> Gets the neighbour of an hex, or `undefined`.
+
+**neighbours**(hex: CubeCoordinates, direction: number = Direction.all): HexType[]
+
+> Gets the neighbours of an hex. You can use `Direction.NorthEast | Direction.South | Direction.SouthEast` to
+> have multiple directions
+
+**rotateLeft**(times: number = 1, center?: CubeCoordinates): Grid\<HexType>
+
+> Rotates the whole grid counterclockwise relative to center. Each rotation is 60 °
+
+**rotateRight**(times: number = 1, center?: CubeCoordinates): Grid\<HexType>
+
+> Rotates the whole grid clockwise relative to center. Each rotation is 60 °
 
 **groups**(hexes: HexType[]): Set\<HexType>[]
 
@@ -43,8 +73,10 @@ grid
 **path**(hex1: CubeCoordinates, hex2: CubeCoordinates): HexType[]
 
 > Get the shortest path between two hexes. Includes starting & destination hexes.
->
-> The algorithm is not optimized with a direction heuristic
+
+**values**(): IterableIterator<HexType>
+
+> An iterator over the hexes
 
 get **size**(): number
 
@@ -57,6 +89,24 @@ Implements the `CubeCoordinates` interface.
 **Hex**(q: number = 0, r: number = 0, s: number = 0, data: Data = undefined)
 
 > Constructor, fills corresponding members with values
+
+**rotateLeft**(times: number = 1, center?: CubeCoordinates): void
+
+> Rotates the hex counterclockwise relative to center. Each rotation is 60 °
+
+**rotateRight**(times: number = 1, center?: CubeCoordinates): void
+
+> Rotates the hex clockwise relative to center. Each rotation is 60 °
+
+**hexagon\<Data>**(radius: number, options?: {center?: CubeCoordinates, data?: Data[]}) :Hex\<Data>[]
+
+> Creates an hexagon with given radius, center, and each hex being initalized with data fed from `data` starting
+> from the exterior ring of the hexagon
+
+**ring\<Data>**(radius: number, options?: {center?: CubeCoordinates, data?: Data[]}) :Hex\<Data>[]
+
+> Creates a ring with given radius, center, and each hex being initalized with data fed from `data` starting
+> from the north hexagon in a clockwise manner
 
 ### CubeCoordinates {q, r, s}
 
@@ -71,3 +121,9 @@ Implements the `CubeCoordinates` interface.
 *static* **translated**(coord: CubeCoordinates, direction: Direction, n = 1): CubeCoordinates
 
 > Coordinates of the hex translated `n` times in `direction`.
+
+### Direction {North, NorthEast, SouthEast, South, SouthWest, NorthWest, all}
+
+*static* **list**(): Direction[]
+
+> Returns an array containing each direction
