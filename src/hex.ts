@@ -10,9 +10,10 @@ export default class Hex<Data=any> implements CubeCoordinates {
         return 0 - this.q - this.r;
     }
 
-    rotateLeft(times: number = 1, center?: CubeCoordinates) {
+    rotateRight(times: number = 1, _center?: CubeCoordinates) {
         // Deal with negative and positive numbers
         times = (times % 6 + 6) % 6;
+        const center = _center? {q: _center.q, r: _center.r} : {q: 0, r: 0};
 
         if (center) {
             [this.q, this.r] = [this.q - center.q, this.r - center.r];
@@ -33,8 +34,8 @@ export default class Hex<Data=any> implements CubeCoordinates {
         }
     }
 
-    rotateRight(times: number = 1, center?: CubeCoordinates) {
-        this.rotateLeft(-times, center);
+    rotateLeft(times: number = 1, center?: CubeCoordinates) {
+        this.rotateRight(-times, center);
     }
 
     toString() : string {
