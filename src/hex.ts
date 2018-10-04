@@ -84,27 +84,27 @@ export default class Hex<Data=any> implements CubeCoordinates {
         const feed: () => Data = () => ret.length < data.length ? data[ret.length] : undefined;
 
         // flat N to NE
-        for (let [q, r] = [0, radius]; r >= 0; r--, q++) {
+        for (let [q, r] = [radius, 0]; q >= 0; q--, r++) {
             ret.push(new this(q,r,feed()));
         }
         // NE to SE
-        for (let [q, r] = [radius, -1]; r >= -radius; r--) {
+        for (let [q, r] = [-1, radius]; q >= -radius; q--) {
             ret.push(new this(q,r,feed()));
         }
         // SE to S
-        for (let [q, r] = [radius-1, -radius]; q >= 0; q--) {
+        for (let [q, r] = [-radius, radius-1]; r >= 0; r--) {
             ret.push(new this(q,r,feed()));
         }
         // S to SW
-        for (let [q, r] = [-1, -radius+1]; q >= -radius; q--, r++) {
+        for (let [q, r] = [-radius+1, -1]; r >= -radius; r--, q++) {
             ret.push(new this(q,r,feed()));
         }
         // SW to NW
-        for (let [q, r] = [-radius, 1]; r <= radius; r++) {
+        for (let [q, r] = [1, -radius]; q <= radius; q++) {
             ret.push(new this(q,r,feed()));
         }
         // NW to N
-        for (let [q, r] = [-radius+1, radius]; q < 0; q++) {
+        for (let [q, r] = [radius, -radius+1]; r < 0; r++) {
             ret.push(new this(q,r,feed()));
         }
 
