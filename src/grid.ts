@@ -247,7 +247,7 @@ export default class Grid<HexType extends Hex<any> = Hex<any>> {
 
             const newGroup = new Set([hex]);
             let toExplore = new Set([hex]);
-            let nextToExplore = new Set();
+            let nextToExplore = new Set<HexType>();
 
             groups.push(newGroup);
 
