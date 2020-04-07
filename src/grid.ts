@@ -141,8 +141,8 @@ export default class Grid<HexType extends Hex<any> = Hex<any>> {
 
     /**
      * Shortest path between two coordinates, stopping when obstacle
-     * @param hex1 
-     * @param hex2 
+     * @param hex1
+     * @param hex2
      */
     easyPath(coord1: CubeCoordinatesPartial, coord2: CubeCoordinatesPartial): HexType[] {
         const hex1 = this.get(coord1);
@@ -247,7 +247,7 @@ export default class Grid<HexType extends Hex<any> = Hex<any>> {
 
             const newGroup = new Set([hex]);
             let toExplore = new Set([hex]);
-            let nextToExplore = new Set();
+            let nextToExplore = new Set<HexType>();
 
             groups.push(newGroup);
 
