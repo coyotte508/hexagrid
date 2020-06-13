@@ -1,6 +1,6 @@
 {
   "name": "hexagrid",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "description": "Hexagonal grid with fast lookup",
   "main": "dist/index.js",
   "repository": "git@github.com:coyotte508/hexagrid.git",
