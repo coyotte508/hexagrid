@@ -18,10 +18,6 @@ The grid can access individual hexagons efficiently by their coordinates. If you
 
 > Get the corresponding stored Hex in the grid.
 
-**getS**(str: string): HexType
-
-> Get the corresponding stored Hex in the grid. `str` is `'${hex.q}x{hex.r}'`. 
-
 **push**(...hexes: HexType[]): HexType
 
 > Adds a bunch of hexes to the grid
