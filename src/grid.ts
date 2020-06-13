@@ -32,16 +32,12 @@ export default class Grid<HexType extends Hex<any> = Hex<any>> {
      */
     push(...hexes: HexType[]) {
         for (const hex of hexes) {
-            this.hexes.set(hex.toString(), hex);
+            this.hexes.set(`${hex.q}x${hex.r}`, hex);
         }
     }
 
     get(coord: CubeCoordinatesPartial): HexType {
         return this.hexes.get(`${coord.q}x${coord.r}`);
-    }
-
-    getS(coord: string): HexType {
-        return this.hexes.get(coord);
     }
 
     neighbour(coord: CubeCoordinatesPartial, direction: Direction) {
