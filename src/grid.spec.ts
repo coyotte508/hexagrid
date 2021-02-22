@@ -6,8 +6,8 @@ describe("Grid", () => {
     it ("should be able to get individual hexes", () => {
         const grid = new Grid<Hex<string>>(new Hex(2, -1, "Hello"), new Hex(2, 0, "World"));
         expect(grid.get({q:2, r: 1})).to.be.undefined;
-        expect(grid.get({q:2, r: 0}).data).to.equal("World");
-        expect(grid.get({q:2, r: -1}).data).to.equal("Hello");
+        expect(grid.get({q:2, r: 0})?.data).to.equal("World");
+        expect(grid.get({q:2, r: -1})?.data).to.equal("Hello");
     });
 
     it ("should overwrite hex at same position and have consistent size", () => {
@@ -20,7 +20,7 @@ describe("Grid", () => {
         grid.push(new Hex(1, 2), new Hex(4, -2, "Boy"));
         expect(grid.size).to.equal(3);
 
-        expect(grid.get({q:4, r: -2}).data).to.equal("Boy");
+        expect(grid.get({q:4, r: -2})?.data).to.equal("Boy");
     });
 
     it ("should be able to remove hexes", () => {
@@ -39,27 +39,27 @@ describe("Grid", () => {
         expect(grid.size).to.equal(7);
 
         grid.remove({q:1, r:0});
-        grid.get({q: 0, r: 1}).data = "Single data";
+        grid.get({q: 0, r: 1})!.data = "Single data";
         expect(grid.size).to.equal(6);
 
         grid.rotateLeft(3);
         expect(grid.get({q: -1, r: 0})).to.be.undefined;
-        expect(grid.get({q: 0, r: -1}).data).to.equal("Single data");
+        expect(grid.get({q: 0, r: -1})?.data).to.equal("Single data");
         expect(grid.size).to.equal(6);
 
         grid.push(new Hex(0, -1, "newer"));
         expect(grid.size).to.equal(6);
-        expect(grid.get({q: 0, r: -1}).data).to.equal("newer");
+        expect(grid.get({q: 0, r: -1})?.data).to.equal("newer");
     });
 
     it ("should be able to recalibrate", () => {
         const grid = new Grid(new Hex(-2, 0), new Hex(1, 1, "ola"));
 
-        grid.get({q: 1, r: 1}).r = 2;
+        grid.get({q: 1, r: 1})!.r = 2;
         grid.recalibrate();
 
         expect(grid.get({q: 1, r: 1})).to.be.undefined;
-        expect(grid.get({q: 1, r: 2}).data).to.equal("ola");
+        expect(grid.get({q: 1, r: 2})?.data).to.equal("ola");
     });
 
     it ("should be able to find neighbours", () => {
