@@ -36,7 +36,7 @@ export default class Grid<HexType extends Hex<any> = Hex<any>> {
         }
     }
 
-    get(coord: CubeCoordinatesPartial): HexType {
+    get(coord: CubeCoordinatesPartial): HexType | undefined {
         return this.hexes.get(`${coord.q}x${coord.r}`);
     }
 
@@ -64,7 +64,7 @@ export default class Grid<HexType extends Hex<any> = Hex<any>> {
      * Using A*
      *
      */
-    path(coord1: CubeCoordinatesPartial, coord2: CubeCoordinatesPartial): HexType[] {
+    path(coord1: CubeCoordinatesPartial, coord2: CubeCoordinatesPartial): HexType[] | undefined {
         const hex1 = this.get(coord1);
         const hex2 = this.get(coord2);
 
@@ -140,7 +140,7 @@ export default class Grid<HexType extends Hex<any> = Hex<any>> {
      * @param hex1
      * @param hex2
      */
-    easyPath(coord1: CubeCoordinatesPartial, coord2: CubeCoordinatesPartial): HexType[] {
+    easyPath(coord1: CubeCoordinatesPartial, coord2: CubeCoordinatesPartial): HexType[] | undefined {
         const hex1 = this.get(coord1);
         const hex2 = this.get(coord2);
 
@@ -150,7 +150,7 @@ export default class Grid<HexType extends Hex<any> = Hex<any>> {
 
         const path = [hex1];
 
-        let currentHex = hex1;
+        let currentHex: HexType | undefined = hex1;
 
         while (currentHex.q !== hex2.q || currentHex.r !== hex2.r) {
             currentHex = this.neighbour(currentHex, CubeCoordinates.direction(currentHex, hex2));

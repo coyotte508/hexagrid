@@ -2,7 +2,7 @@ import { CubeCoordinates } from "./cubecoordinates";
 import { loadDefaults, clone } from "./utils";
 
 export default class Hex<Data=any> implements CubeCoordinates {
-    constructor(public q: number = 0, public r: number = 0, public data: Data = undefined) {
+    constructor(public q: number = 0, public r: number = 0, public data?: Data) {
         
     }
 
@@ -42,7 +42,7 @@ export default class Hex<Data=any> implements CubeCoordinates {
         return `${this.q}x${this.r}`;
     }
 
-    toJSON(): CubeCoordinates & {data: Data} {
+    toJSON(): CubeCoordinates & {data?: Data} {
         return {
             q: this.q,
             r: this.r,
@@ -81,7 +81,7 @@ export default class Hex<Data=any> implements CubeCoordinates {
         const {center, data} = loadDefaults(options, {data: [], center: {q: 0, r: 0, s: 0}});
         const ret: Hex<Data>[] = [];
 
-        const feed: () => Data = () => ret.length < data.length ? data[ret.length] : undefined;
+        const feed: () => Data | undefined = () => ret.length < data.length ? data[ret.length] : undefined;
 
         // flat N to NE
         for (let [q, r] = [radius, 0]; q >= 0; q--, r++) {

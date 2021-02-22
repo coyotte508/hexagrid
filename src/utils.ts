@@ -8,6 +8,6 @@ export function clone<T>(val: T): T {
     }
 }
 
-export function loadDefaults<T, U>(args: T, defaults: U): T {
+export function loadDefaults<T, U>(args: T, defaults: U): T & U {
     return Object.assign(defaults, args);
 }
